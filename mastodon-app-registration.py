@@ -195,11 +195,11 @@ if __name__ == "__main__":
     # load_dotenv()
 
     # Setup Google Cloud Logging
-    project_id = os.environ.get("PROJECT_NAME")
-    credentials_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") if args.local else None
-    print(project_id)
-    gcl = GoogleCloudLogging(project_id, credentials_path)
-    gcl.setup_logging()
+    # project_id = os.environ.get("PROJECT_NAME")
+    # credentials_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") if args.local else None
+    # print(project_id)
+    # gcl = GoogleCloudLogging(project_id, credentials_path)
+    # gcl.setup_logging()
 
     cred_file = "masto-secret.secret"
     password = os.getenv("MASTODON_PASSWORD")
