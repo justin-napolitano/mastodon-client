@@ -192,7 +192,7 @@ if __name__ == "__main__":
     base_url = args.url
 
     # Load environment variables from .env file
-    load_dotenv()
+    # load_dotenv()
 
     # Setup Google Cloud Logging
     project_id = os.environ.get("PROJECT_NAME")
