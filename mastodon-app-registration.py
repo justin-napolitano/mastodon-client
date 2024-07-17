@@ -1,6 +1,10 @@
 import os
+import logging
 from mastodon import Mastodon
 from dotenv import load_dotenv
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def create_app(app_name="cobra-bot2", api_base_url=None, to_file="masto-secret.secret"):
     '''
@@ -28,6 +32,7 @@ def create_app(app_name="cobra-bot2", api_base_url=None, to_file="masto-secret.s
         to_file=to_file,
         website="https://jnapolitano.com"
     )
+    logging.info(f"App '{app_name}' registered and credentials saved to '{to_file}'")
 
 if __name__ == "__main__":
     load_dotenv()  # Load environment variables from .env file
@@ -39,24 +44,28 @@ if __name__ == "__main__":
     user_cred_file = 'cobra-usercred.secret'
 
     if not os.path.exists(cred_file):
+        logging.info("Credentials file not found. Registering app...")
         create_app(api_base_url=api_base_url, to_file=cred_file)
-        print(f"App registered and credentials saved to {cred_file}")
     else:
-        print(f"Credentials file '{cred_file}' already exists. Skipping app registration.")
+        logging.info(f"Credentials file '{cred_file}' already exists. Skipping app registration.")
 
     # Instantiate the App
-    
     mastodon = Mastodon(
         client_id=cred_file,
         api_base_url=api_base_url
     )
-    
+    logging.info("Mastodon app instance created")
+
     # Login with .env credentials
-    mastodon.log_in(
-        username,
-        password,
-        to_file=user_cred_file
-    )
+    try:
+        mastodon.log_in(
+            username,
+            password,
+            to_file=user_cred_file
+        )
+        logging.info("Logged in and user credentials saved")
+    except Exception as e:
+        logging.error(f"Error during login: {e}")
 
     # Run a session
     mastodon = Mastodon(
@@ -64,3 +73,8 @@ if __name__ == "__main__":
         access_token=user_cred_file,
         api_base_url=api_base_url
     )
+    logging.info("Mastodon session started")
+
+    #test a toot
+
+    mastodon.toot('Tooting from Python using cobrabot !')
