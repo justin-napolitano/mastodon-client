@@ -6,6 +6,7 @@ import requests
 import json
 from datetime import datetime
 import argparse
+from gcputils.GoogleCloudLogging import GoogleCloudLogging
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -184,10 +185,21 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Retrieve a new post from the feed table.')
     parser.add_argument('--url', type=str, default="http://localhost:8080", help='Base URL for the API endpoint')
+    parser.add_argument('--local', action='store_true', help='Use local credentials for Google Cloud Logging')
     args = parser.parse_args()
     
     toot_table = "toots"
     base_url = args.url
+
+    # Load environment variables from .env file
+    load_dotenv()
+
+    # Setup Google Cloud Logging
+    project_id = os.environ.get("PROJECT_NAME")
+    credentials_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") if args.local else None
+    print(project_id)
+    gcl = GoogleCloudLogging(project_id, credentials_path)
+    gcl.setup_logging()
 
     cred_file = "masto-secret.secret"
     password = os.getenv("MASTODON_PASSWORD")
