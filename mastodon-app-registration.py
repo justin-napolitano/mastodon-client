@@ -7,29 +7,21 @@ import json
 from datetime import datetime
 import argparse
 
-
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def create_app(app_name="cobra-bot2", api_base_url=None, to_file="masto-secret.secret"):
     '''
-    Source: https://mastodonpy.readthedocs.io/en/stable/_modules/mastodon/authentication.html#Mastodon.create_app
+    Create a new app with given app_name and scopes on the instance given by api_base_url.
 
-    Create a new app with given app_name and scopes (The basic scopes are “read”, “write”, “follow” and “push” - more granular scopes are available, please refer to Mastodon documentation for which) on the instance given by api_base_url.
+    Args:
+    app_name (str): Name of the app to be created.
+    api_base_url (str): Base URL of the Mastodon instance.
+    to_file (str): File to save the app credentials.
 
-    Specify redirect_uris if you want users to be redirected to a certain page after authenticating in an OAuth flow. You can specify multiple URLs by passing a list. Note that if you wish to use OAuth authentication with redirects, the redirect URI must be one of the URLs specified here.
-
-    Specify to_file to persist your app’s info to a file so you can use it in the constructor. Specify website to give a website for your app.
-
-    Specify session with a requests.Session for it to be used instead of the default. This can be used to, amongst other things, adjust proxy or SSL certificate settings.
-
-    Specify user_agent if you want to use a specific name as User-Agent header, otherwise “mastodonpy” will be used.
-
-    Presently, app registration is open by default, but this is not guaranteed to be the case for all Mastodon instances in the future.
-
-    Returns client_id and client_secret, both as strings.
+    Returns:
+    None
     '''
-
     Mastodon.create_app(
         client_name=app_name,
         scopes=['read', 'write', 'follow', 'push'],
@@ -39,14 +31,33 @@ def create_app(app_name="cobra-bot2", api_base_url=None, to_file="masto-secret.s
     )
     logging.info(f"App '{app_name}' registered and credentials saved to '{to_file}'")
 
-
 def format_datetime_for_api(dt):
+    '''
+    Format datetime for API.
+
+    Args:
+    dt (datetime): Datetime object to format.
+
+    Returns:
+    str: Formatted datetime string.
+    '''
     if dt:
-        print(dt.strftime("%Y-%m-%dT%H:%M:%S"))
-        return dt.strftime("%Y-%m-%dT%H:%M:%S")
+        formatted_date = dt.strftime("%Y-%m-%dT%H:%M:%S")
+        logging.debug(f"Formatted datetime: {formatted_date}")
+        return formatted_date
     return None
 
 def update_toot(data, base_url):
+    '''
+    Update toot in the database by sending a POST request to the API endpoint.
+
+    Args:
+    data (dict): Toot data dictionary.
+    base_url (str): Base URL of the API endpoint.
+
+    Returns:
+    None
+    '''
     try:
         url = f"{base_url}/update/toots"
         headers = {'Content-Type': 'application/json'}
@@ -83,19 +94,29 @@ def update_toot(data, base_url):
             "card": json.dumps(data.get('card')),
             "poll": json.dumps(data.get('poll'))
         }
-        print(toot_data)
-        pretty_print_json(toot_data)
+        
+        logging.debug(f"Toot data: {json.dumps(toot_data, indent=4)}")
         response = requests.post(url, headers=headers, data=json.dumps(toot_data))
         if response.status_code == 201:
-            print(f"Successfully added toot: {toot_data['id']}")
+            logging.info(f"Successfully added toot: {toot_data['id']}")
         elif response.status_code == 200:
-            print(f"Toot updated or no update needed for: {toot_data['id']}")
+            logging.info(f"Toot updated or no update needed for: {toot_data['id']}")
         else:
-            print(f"Failed to update toot: {toot_data['id']}, Status Code: {response.status_code}, Message: {response.text}")
+            logging.error(f"Failed to update toot: {toot_data['id']}, Status Code: {response.status_code}, Message: {response.text}")
     except Exception as e:
-        print(f"An error occurred while updating the toot: {e}")
+        logging.exception(f"An error occurred while updating the toot: {e}")
 
 def get_new_post(base_url, table_name):
+    '''
+    Retrieve a new post from the specified table by sending a GET request to the API endpoint.
+
+    Args:
+    base_url (str): Base URL of the API endpoint.
+    table_name (str): Name of the table to retrieve the post from.
+
+    Returns:
+    dict: Retrieved post data.
+    '''
     try:
         url = f"{base_url}/get/post"
         params = {'table': table_name}
@@ -103,36 +124,62 @@ def get_new_post(base_url, table_name):
 
         if response.status_code == 200:
             post = response.json()
-            print("New post retrieved:")
+            logging.info("New post retrieved")
             return post
         elif response.status_code == 404:
-            print("No new posts available.")
+            logging.info("No new posts available")
         else:
-            print(f"Failed to retrieve post: {response.status_code} - {response.text}")
+            logging.error(f"Failed to retrieve post: {response.status_code} - {response.text}")
     except Exception as e:
-        print(f"An error occurred while fetching the post: {e}")
+        logging.exception(f"An error occurred while fetching the post: {e}")
 
 def format_a_toot(post):
+    '''
+    Format a toot message from the post data.
 
+    Args:
+    post (dict): Post data dictionary.
+
+    Returns:
+    str: Formatted toot message.
+    '''
     toot = f"New post : {post['title']} at {post['guid']}"  
+    logging.debug(f"Formatted toot: {toot}")
     return toot
 
 def format_datetime(date_str, date_format="%a, %d %b %Y %H:%M:%S %z"):
+    '''
+    Format a date string to a specified format.
+
+    Args:
+    date_str (str): Date string to format.
+    date_format (str): Format of the date string.
+
+    Returns:
+    str: Formatted date string.
+    '''
     try:
         dt = datetime.strptime(date_str, date_format)
         formatted_date = dt.strftime("%Y-%m-%dT%H:%M:%S")
+        logging.debug(f"Formatted datetime: {formatted_date}")
         return formatted_date
     except Exception as e:
         logging.error(f"An error occurred while formatting date: {e}")
         return None
-    
 
 def pretty_print_json(data):
-    print(json.dumps(data, indent=4))
+    '''
+    Pretty print a JSON object.
+
+    Args:
+    data (dict): JSON data to print.
+
+    Returns:
+    None
+    '''
+    logging.debug(json.dumps(data, indent=4))
 
 if __name__ == "__main__":
-
-    
     load_dotenv()  # Load environment variables from .env file
 
     parser = argparse.ArgumentParser(description='Retrieve a new post from the feed table.')
@@ -180,28 +227,16 @@ if __name__ == "__main__":
     )
     logging.info("Mastodon session started")
 
-    #test a toot
-    post = get_new_post(base_url=base_url,table_name=toot_table)
+    # Test a toot
+    post = get_new_post(base_url=base_url, table_name=toot_table)
+    if post:
+        toot = format_a_toot(post)
+        toot_result = mastodon.toot(toot)
 
-    toot = format_a_toot(post)
-    
-    toot_result = mastodon.toot(toot)
+        # Add empty application and account fields
+        toot_result["application"] = {}
+        toot_result["account"] = {}
 
-    toot_result["application"] = {}
-    toot_result["account"] = {}
-    
-
-    # pretty_print_json(toot_result)
-
-    update_toot(data = toot_result, base_url=base_url)
-
-
-
-
-    #print(post)
-
-    # mastodon.toot('Tooting from Python using cobrabot !')
-
-    # data = mastodon.toot('Tooting from Python using cobrabot !')
-
-    # print(data)
+        update_toot(data=toot_result, base_url=base_url)
+    else:
+        logging.info("No new post to toot")
