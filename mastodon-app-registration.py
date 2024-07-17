@@ -127,20 +127,6 @@ def format_datetime(date_str, date_format="%a, %d %b %Y %H:%M:%S %z"):
         return None
     
 
-def update_database_toots(data, base_url):
-    try:
-        url = f"{base_url}/update/toots"
-        headers = {'Content-Type': 'application/json'}
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        if response.status_code == 201:
-            logging.info(f"Successfully added toot: {data['id']}")
-        elif response.status_code == 200:
-            logging.info(f"Toot updated or no update needed for: {data['id']}")
-        else:
-            logging.error(f"Failed to update database for toot: {data['id']}, Status Code: {response.status_code}, Message: {response.text}")
-    except Exception as e:
-        logging.error(f"An error occurred while updating the database: {e}")
-
 def pretty_print_json(data):
     print(json.dumps(data, indent=4))
 
