@@ -2,6 +2,10 @@ import os
 import logging
 from mastodon import Mastodon
 from dotenv import load_dotenv
+import requests
+import json
+from datetime import datetime
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -33,6 +37,60 @@ def create_app(app_name="cobra-bot2", api_base_url=None, to_file="masto-secret.s
         website="https://jnapolitano.com"
     )
     logging.info(f"App '{app_name}' registered and credentials saved to '{to_file}'")
+
+
+def format_datetime_for_api(dt):
+    if dt:
+        return dt.strftime("%Y-%m-%dT%H:%M:%S")
+    return None
+
+def update_toot(data, base_url):
+    try:
+        url = f"{base_url}/update/toots"
+        headers = {'Content-Type': 'application/json'}
+        
+        toot_data = {
+            "id": data['id'],
+            "created_at": format_datetime_for_api(data['created_at']),
+            "in_reply_to_id": data.get('in_reply_to_id'),
+            "in_reply_to_account_id": data.get('in_reply_to_account_id'),
+            "sensitive": data.get('sensitive', False),
+            "spoiler_text": data.get('spoiler_text', ''),
+            "visibility": data.get('visibility', 'public'),
+            "language": data.get('language', ''),
+            "uri": data.get('uri'),
+            "url": data.get('url'),
+            "site_url": data['account']['url'] if 'account' in data and 'url' in data['account'] else '',
+            "replies_count": data.get('replies_count', 0),
+            "reblogs_count": data.get('reblogs_count', 0),
+            "favourites_count": data.get('favourites_count', 0),
+            "favourited": data.get('favourited', False),
+            "reblogged": data.get('reblogged', False),
+            "muted": data.get('muted', False),
+            "bookmarked": data.get('bookmarked', False),
+            "pinned": data.get('pinned', False),
+            "content": data.get('content', ''),
+            "filtered": json.dumps(data.get('filtered', [])),
+            "reblog": json.dumps(data.get('reblog')),
+            "application": json.dumps(data.get('application')),
+            "account": json.dumps(data.get('account')),
+            "media_attachments": json.dumps(data.get('media_attachments', [])),
+            "mentions": json.dumps(data.get('mentions', [])),
+            "tags": json.dumps(data.get('tags', [])),
+            "emojis": json.dumps(data.get('emojis', [])),
+            "card": json.dumps(data.get('card')),
+            "poll": json.dumps(data.get('poll'))
+        }
+        
+        response = requests.post(url, headers=headers, data=json.dumps(toot_data))
+        if response.status_code == 201:
+            print(f"Successfully added toot: {toot_data['id']}")
+        elif response.status_code == 200:
+            print(f"Toot updated or no update needed for: {toot_data['id']}")
+        else:
+            print(f"Failed to update toot: {toot_data['id']}, Status Code: {response.status_code}, Message: {response.text}")
+    except Exception as e:
+        print(f"An error occurred while updating the toot: {e}")
 
 if __name__ == "__main__":
     load_dotenv()  # Load environment variables from .env file
@@ -78,3 +136,7 @@ if __name__ == "__main__":
     #test a toot
 
     mastodon.toot('Tooting from Python using cobrabot !')
+
+    data = mastodon.toot('Tooting from Python using cobrabot !')
+
+    print(data)
