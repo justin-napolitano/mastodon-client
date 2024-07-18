@@ -6,6 +6,7 @@ import requests
 import json
 from datetime import datetime
 import argparse
+from google.cloud import secretmanager
 from gcputils.GoogleCloudLogging import GoogleCloudLogging
 
 # Set up logging
@@ -188,6 +189,22 @@ def print_directory_contents(directory):
         for file_name in files:
             logging.info(f"File: {os.path.join(root, file_name)}")
 
+def access_secret_version(client, secret_id, version_id='latest'):
+    """
+    Access the secret version and return the payload.
+
+    Args:
+    client: The Secret Manager client.
+    secret_id: The ID of the secret to access.
+    version_id: The version of the secret to access (default is 'latest').
+
+    Returns:
+    The secret payload as a string.
+    """
+    name = f"projects/{client.project}/secrets/{secret_id}/versions/{version_id}"
+    response = client.access_secret_version(name=name)
+    payload = response.payload.data.decode("UTF-8")
+    return payload
 
 if __name__ == "__main__":
     load_dotenv()  # Load environment variables from .env file
@@ -200,24 +217,38 @@ if __name__ == "__main__":
     toot_table = "toots"
     base_url = args.url
 
-    # Load environment variables from .env file
-    # load_dotenv()
-
     # Setup Google Cloud Logging
     # project_id = os.environ.get("PROJECT_NAME")
     # credentials_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") if args.local else None
-    # print(project_id)
     # gcl = GoogleCloudLogging(project_id, credentials_path)
     # gcl.setup_logging()
 
-    cred_file = "/app/masto-secret.secret"
-    logging.info(cred_file)
-    logging.info(os.getcwd())
-    print_directory_contents(os.getcwd())
-    password = os.getenv("MASTODON_PASSWORD")
-    username = os.getenv("MASTODON_USERNAME")
-    api_base_url = "https://mastodon.social"
-    user_cred_file = '/app/cobra-usercred.secret'
+    # cred_file = "/app/masto-secret.secret"
+    
+    # logging.info(cred_file)
+    # logging.info(os.getcwd())
+    # print_directory_contents(os.getcwd())
+
+    #Mastodon CLIENT ID FROM SECRET MANSGER
+
+    client = secretmanager.SecretManagerServiceClient()
+    project_id = os.getenv("PROJECT_NAME")
+    client.project = project_id
+
+    try:
+        mastodon_password = access_secret_version(client, "MASTODON_PASSWORD")
+        mastodon_username = access_secret_version(client, "MASTODON_USERNAME")
+        mastodon_client_id = access_secret_version(client, "MASTODON_CLIENT_ID")
+        mastodon_secret = access_secret_version(client, "MASTODON_SECRET")
+        mastodon_base_url = access_secret_version(client, "MASTODON_BASE_URL")
+        mastodon_user_agent = access_secret_version(client, "MASTODON_USER_AGENT")
+        logging.info("Secrets accessed successfully")
+    except Exception as e:
+        logging.error(f"Error accessing secrets: {e}")
+        raise
+
+    # api_base_url = "https://mastodon.social"
+    # user_cred_file = '/app/cobra-usercred.secret'
 
     # if not os.path.exists(cred_file):
     #     logging.info("Credentials file not found. Registering app...")
@@ -227,17 +258,19 @@ if __name__ == "__main__":
 
     # Instantiate the App
     mastodon = Mastodon(
-        client_id=cred_file,
-        api_base_url=api_base_url
+        client_id=mastodon_client_id,
+        client_secret=mastodon_secret,
+        api_base_url=mastodon_base_url,
+        user_agent=mastodon_user_agent
     )
     logging.info("Mastodon app instance created")
 
-    # Login with .env credentials
+    # Login with secrets
     try:
-        mastodon.log_in(
-            username,
-            password,
-            to_file=user_cred_file
+        user_access_token = mastodon.log_in(
+            mastodon_username,
+            mastodon_password,
+            # to_file=user_cred_file
         )
         logging.info("Logged in and user credentials saved")
     except Exception as e:
@@ -245,9 +278,10 @@ if __name__ == "__main__":
 
     # Run a session
     mastodon = Mastodon(
-        client_id=cred_file,
-        access_token=user_cred_file,
-        api_base_url=api_base_url
+        client_id=mastodon_client_id,
+        client_secret=mastodon_secret,
+        access_token=user_access_token,
+        api_base_url=mastodon_base_url
     )
     logging.info("Mastodon session started")
 
