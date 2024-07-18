@@ -1,6 +1,6 @@
 +++
 title =  "Mastodon Bot Script"
-date = "2024-06-18 14:36:34.376 -0500" 
+date = "2024-07-18 14:36:34.376 -0500" 
 description = "Automate Posting to Mastodon"
 author = "Justin Napolitano"
 tags = ['python', "hugo","programming","fail"]
