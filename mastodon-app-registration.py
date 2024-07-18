@@ -8,6 +8,7 @@ from datetime import datetime
 import argparse
 from google.cloud import secretmanager
 from gcputils.GoogleCloudLogging import GoogleCloudLogging
+from gcputils.GoogleSecretManager import GoogleSecretManager
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -207,7 +208,7 @@ def access_secret_version(client, secret_id, version_id='latest'):
     return payload
 
 if __name__ == "__main__":
-    load_dotenv()  # Load environment variables from .env file
+    # load_dotenv()  # Load environment variables from .env file
 
     parser = argparse.ArgumentParser(description='Retrieve a new post from the feed table.')
     parser.add_argument('--url', type=str, default="http://localhost:8080", help='Base URL for the API endpoint')
@@ -231,18 +232,18 @@ if __name__ == "__main__":
 
     #Mastodon CLIENT ID FROM SECRET MANSGER
 
-    client = secretmanager.SecretManagerServiceClient()
     # project_id = os.getenv("PROJECT_NAME")
     project_id = "smart-axis-421517"
-    client.project = project_id
+    gsm = GoogleSecretManager(project_id)
+    # client.project = project_id
 
     try:
-        mastodon_password = access_secret_version(client, "MASTODON_PASSWORD")
-        mastodon_username = access_secret_version(client, "MASTODON_USERNAME")
-        mastodon_client_id = access_secret_version(client, "MASTODON_CLIENT_ID")
-        mastodon_secret = access_secret_version(client, "MASTODON_SECRET")
-        mastodon_base_url = access_secret_version(client, "MASTODON_BASE_URL")
-        mastodon_user_agent = access_secret_version(client, "MASTODON_USER_AGENT")
+        mastodon_password = gsm.access_secret("MASTODON_PASSWORD")
+        mastodon_username = gsm.access_secret("MASTODON_USERNAME")
+        mastodon_client_id = gsm.access_secret("MASTODON_CLIENT_ID")
+        mastodon_secret = gsm.access_secret("MASTODON_SECRET")
+        mastodon_base_url = gsm.access_secret("MASTODON_BASE_URL")
+        mastodon_user_agent = gsm.access_secret("MASTODON_USER_AGENT")
         logging.info("Secrets accessed successfully")
     except Exception as e:
         logging.error(f"Error accessing secrets: {e}")
