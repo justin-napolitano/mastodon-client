@@ -290,7 +290,7 @@ if __name__ == "__main__":
 
     # Test a toot
     post = get_new_post(base_url=base_url, table_name=toot_table)
-    logging.info(post)
+    logging.info(f"post information: {post}")
     if post:
         toot = format_a_toot(post)
         toot_result = mastodon.toot(toot)
@@ -298,7 +298,7 @@ if __name__ == "__main__":
         # Add empty application and account fields
         toot_result["application"] = {}
         toot_result["account"] = {}
-        toot_result["site_url"] =post['guid']
+        toot_result["site_url"] =post['link']
 
         update_toot(data=toot_result, base_url=base_url)
     else:
