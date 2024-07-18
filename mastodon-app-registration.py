@@ -76,7 +76,8 @@ def update_toot(data, base_url):
             "language": data.get('language', ''),
             "uri": data.get('uri'),
             "url": data.get('url'),
-            "site_url": data['account']['url'] if 'account' in data and 'url' in data['account'] else '',
+            "site_url": data['site_url'],
+            # data['account']['url'] if 'account' in data and 'url' in data['account'] else '',
             "replies_count": data.get('replies_count', 0),
             "reblogs_count": data.get('reblogs_count', 0),
             "favourites_count": data.get('favourites_count', 0),
@@ -101,9 +102,9 @@ def update_toot(data, base_url):
         logging.debug(f"Toot data: {json.dumps(toot_data, indent=4)}")
         response = requests.post(url, headers=headers, data=json.dumps(toot_data))
         if response.status_code == 201:
-            logging.info(f"Successfully added toot: {toot_data['id']}")
+            logging.info(f"Successfully added toot: {toot_data['url']}")
         elif response.status_code == 200:
-            logging.info(f"Toot updated or no update needed for: {toot_data['id']}")
+            logging.info(f"Toot updated or no update needed for: {toot_data['url']}")
         else:
             logging.error(f"Failed to update toot: {toot_data['id']}, Status Code: {response.status_code}, Message: {response.text}")
     except Exception as e:
@@ -289,6 +290,7 @@ if __name__ == "__main__":
 
     # Test a toot
     post = get_new_post(base_url=base_url, table_name=toot_table)
+    logging.info(post)
     if post:
         toot = format_a_toot(post)
         toot_result = mastodon.toot(toot)
@@ -296,6 +298,7 @@ if __name__ == "__main__":
         # Add empty application and account fields
         toot_result["application"] = {}
         toot_result["account"] = {}
+        toot_result["site_url"] =post['guid']
 
         update_toot(data=toot_result, base_url=base_url)
     else:
