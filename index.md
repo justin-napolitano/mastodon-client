@@ -1,3 +1,13 @@
++++
+title =  "Mastodon Bot Script"
+date = "2024-06-18 14:36:34.376 -0500" 
+description = "Automate Posting to Mastodon"
+author = "Justin Napolitano"
+tags = ['python', "hugo","programming","fail"]
+images = ["images/feature-python.png"]
+categories = ["Projects"]
++++
+
 # Mastodon Bot Script
 
 This script manages the Mastodon bot, including retrieving secrets from Google Cloud Secret Manager, logging in to Mastodon, and posting toots.
