@@ -232,7 +232,8 @@ if __name__ == "__main__":
     #Mastodon CLIENT ID FROM SECRET MANSGER
 
     client = secretmanager.SecretManagerServiceClient()
-    project_id = os.getenv("PROJECT_NAME")
+    # project_id = os.getenv("PROJECT_NAME")
+    project_id = "smart-axis-421517"
     client.project = project_id
 
     try:
