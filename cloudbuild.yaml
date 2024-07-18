@@ -1,0 +1,21 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-west2-docker.pkg.dev/smart-axis-421517/mastodon-client/mastodon-client:dev', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-west2-docker.pkg.dev/smart-axis-421517/mastodon-client/mastodon-client:dev']
+
+  # - name: 'gcr.io/cloud-builders/gcloud'
+  #   args: ['run', 'jobs', 'create', 'mastodon-client',
+  #          '--image', 'us-west2-docker.pkg.dev/smart-axis-421517/mastodon-client/mastodon-client:dev',
+  #          '--region', 'us-west2']
+
+  # - name: 'gcr.io/cloud-builders/gcloud'
+  #   args: ['scheduler', 'jobs', 'create', 'http', 'mastodon-client-scheduler',
+  #          '--schedule', '0 * * * *',
+  #          '--uri', 'https://us-west2-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/smart-axis-421517/jobs/mastodon-client:run',
+  #          '--http-method', 'POST',
+  #          '--time-zone', 'UTC',
+  #          '--oidc-service-account-email', 'general-purpose-account@smart-axis-421517.iam.gserviceaccount.com']
+
+timeout: '1200s'
