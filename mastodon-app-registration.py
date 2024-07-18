@@ -147,7 +147,7 @@ def format_a_toot(post):
     Returns:
     str: Formatted toot message.
     '''
-    toot = f"New post : {post['title']} at {post['guid']}"  
+    toot = f"New post : {post['title']} \n {post['guid']}"  
     logging.debug(f"Formatted toot: {toot}")
     return toot
 
