@@ -180,6 +180,15 @@ def pretty_print_json(data):
     '''
     logging.debug(json.dumps(data, indent=4))
 
+def print_directory_contents(directory):
+    for root, dirs, files in os.walk(directory):
+        logging.info(f"Root: {root}")
+        for dir_name in dirs:
+            logging.info(f"Directory: {os.path.join(root, dir_name)}")
+        for file_name in files:
+            logging.info(f"File: {os.path.join(root, file_name)}")
+
+
 if __name__ == "__main__":
     load_dotenv()  # Load environment variables from .env file
 
@@ -201,17 +210,20 @@ if __name__ == "__main__":
     # gcl = GoogleCloudLogging(project_id, credentials_path)
     # gcl.setup_logging()
 
-    cred_file = "masto-secret.secret"
+    cred_file = "/app/masto-secret.secret"
+    logging.info(cred_file)
+    logging.info(os.getcwd())
+    print_directory_contents(os.getcwd())
     password = os.getenv("MASTODON_PASSWORD")
     username = os.getenv("MASTODON_USERNAME")
     api_base_url = "https://mastodon.social"
-    user_cred_file = 'cobra-usercred.secret'
+    user_cred_file = '/app/cobra-usercred.secret'
 
-    if not os.path.exists(cred_file):
-        logging.info("Credentials file not found. Registering app...")
-        create_app(api_base_url=api_base_url, to_file=cred_file)
-    else:
-        logging.info(f"Credentials file '{cred_file}' already exists. Skipping app registration.")
+    # if not os.path.exists(cred_file):
+    #     logging.info("Credentials file not found. Registering app...")
+    #     create_app(api_base_url=api_base_url, to_file=cred_file)
+    # else:
+    #     logging.info(f"Credentials file '{cred_file}' already exists. Skipping app registration.")
 
     # Instantiate the App
     mastodon = Mastodon(
