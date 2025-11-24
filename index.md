@@ -22,6 +22,13 @@ seoSecondaryKeywords:
   - mastodon api
   - docker deployment
 seoOptimized: true
+topicFamily: automation
+topicFamilyConfidence: 0.95
+topicFamilyNotes: >-
+  The post is focused on a Python Mastodon client integrating automated tasks like app registration,
+  post management, secret management via Google Cloud, logging, and Docker-based deployment. These
+  relate strongly to automation of API interactions, deployment, and cloud secret/log management
+  fitting the 'Automation' family.
 ---
 
 # Mastodon Client: Technical Overview and Implementation
@@ -87,4 +94,5 @@ The `cloudbuild.yaml` file defines steps to build and push a Docker image to Goo
 This Mastodon client project exemplifies a pragmatic approach to building a cloud-integrated social media client. It balances Mastodon API interaction with secure, scalable infrastructure components, providing a foundation for further extension into analytics, automation, and user interaction workflows.
 
 Future work should focus on expanding API coverage, improving error handling, and integrating analytics pipelines using BigQuery.
+
 
