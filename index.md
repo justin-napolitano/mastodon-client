@@ -1,12 +1,28 @@
 ---
-slug: "github-mastodon-client"
-title: "mastodon-client"
-repo: "justin-napolitano/mastodon-client"
-githubUrl: "https://github.com/justin-napolitano/mastodon-client"
-generatedAt: "2025-11-23T09:17:36.564188Z"
-source: "github-auto"
+slug: github-mastodon-client
+title: Python Mastodon Client with Google Cloud Secret Management and Logging
+repo: justin-napolitano/mastodon-client
+githubUrl: https://github.com/justin-napolitano/mastodon-client
+generatedAt: '2025-11-23T09:17:36.564188Z'
+source: github-auto
+summary: >-
+  Overview of a Python Mastodon client integrating app registration, post management, Google Cloud
+  Secret Manager, logging, and Docker deployment.
+tags:
+  - mastodon
+  - python
+  - google-cloud
+  - secret-management
+  - docker
+  - logging
+seoPrimaryKeyword: mastodon client
+seoSecondaryKeywords:
+  - python mastodon client
+  - google cloud secret manager
+  - mastodon api
+  - docker deployment
+seoOptimized: true
 ---
-
 
 # Mastodon Client: Technical Overview and Implementation
 
@@ -71,3 +87,4 @@ The `cloudbuild.yaml` file defines steps to build and push a Docker image to Goo
 This Mastodon client project exemplifies a pragmatic approach to building a cloud-integrated social media client. It balances Mastodon API interaction with secure, scalable infrastructure components, providing a foundation for further extension into analytics, automation, and user interaction workflows.
 
 Future work should focus on expanding API coverage, improving error handling, and integrating analytics pipelines using BigQuery.
+
