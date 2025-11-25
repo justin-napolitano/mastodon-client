@@ -7,8 +7,8 @@ githubUrl: https://github.com/justin-napolitano/mastodon-client
 generatedAt: '2025-11-24T21:35:36.702Z'
 source: github-auto
 summary: >-
-  Explore a Python client for Mastodon with Google Cloud integration for secure
-  credential management and logging.
+  Explore a Python client for Mastodon with Google Cloud integration for secure credential
+  management and logging.
 tags:
   - python
   - mastodon
@@ -22,8 +22,8 @@ seoSecondaryKeywords:
   - python logging
   - toot management
 seoOptimized: true
-topicFamily: null
-topicFamilyConfidence: null
+topicFamily: automation
+topicFamilyConfidence: 0.9
 kind: project
 entryLayout: project
 showInProjects: true
@@ -152,4 +152,5 @@ mastodon-client/
 ---
 
 For questions or contributions, please open an issue or pull request on GitHub.
+
 
