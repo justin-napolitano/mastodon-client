@@ -1,20 +1,27 @@
 ---
 slug: github-mastodon-client
 id: github-mastodon-client
-title: Mastodon Client
+title: 'Mastodon Client: Python API Integration and Deployment'
 repo: justin-napolitano/mastodon-client
 githubUrl: https://github.com/justin-napolitano/mastodon-client
 generatedAt: '2025-11-24T21:35:36.702Z'
 source: github-auto
 summary: >-
-  A Python-based client for interacting with Mastodon instances, supporting app
-  registration, posting, and managing toots. This project integrates Google
-  Cloud services for secret management and logging, facilitating robust
-  deployment and operation.
-tags: []
-seoPrimaryKeyword: ''
-seoSecondaryKeywords: []
-seoOptimized: false
+  Explore a Python client for Mastodon with Google Cloud integration for secure
+  credential management and logging.
+tags:
+  - python
+  - mastodon
+  - docker
+  - logging
+seoPrimaryKeyword: python mastodon client
+seoSecondaryKeywords:
+  - mastodon api integration
+  - google cloud secret manager
+  - dockerized applications
+  - python logging
+  - toot management
+seoOptimized: true
 topicFamily: null
 topicFamilyConfidence: null
 kind: project
