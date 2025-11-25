@@ -1,13 +1,13 @@
 ---
 slug: github-mastodon-client
-title: Python Mastodon Client with Google Cloud Secret Management and Logging
+title: Mastodon Client Implementation Overview and Architecture
 repo: justin-napolitano/mastodon-client
 githubUrl: https://github.com/justin-napolitano/mastodon-client
 generatedAt: '2025-11-23T09:17:36.564188Z'
 source: github-auto
 summary: >-
-  Overview of a Python Mastodon client integrating app registration, post management, Google Cloud
-  Secret Manager, logging, and Docker deployment.
+  Explore the technical details of a Python client for Mastodon, covering app
+  registration, secret management, logging, and deployment strategies.
 tags:
   - mastodon
   - python
@@ -15,20 +15,25 @@ tags:
   - secret-management
   - docker
   - logging
-seoPrimaryKeyword: mastodon client
+  - oauth
+seoPrimaryKeyword: mastodon client implementation
 seoSecondaryKeywords:
   - python mastodon client
   - google cloud secret manager
-  - mastodon api
   - docker deployment
+  - oauth app registration
+  - cloud logging integration
 seoOptimized: true
 topicFamily: automation
 topicFamilyConfidence: 0.95
 topicFamilyNotes: >-
-  The post is focused on a Python Mastodon client integrating automated tasks like app registration,
-  post management, secret management via Google Cloud, logging, and Docker-based deployment. These
-  relate strongly to automation of API interactions, deployment, and cloud secret/log management
-  fitting the 'Automation' family.
+  The post is focused on a Python Mastodon client integrating automated tasks
+  like app registration, post management, secret management via Google Cloud,
+  logging, and Docker-based deployment. These relate strongly to automation of
+  API interactions, deployment, and cloud secret/log management fitting the
+  'Automation' family.
+kind: project
+id: github-mastodon-client
 ---
 
 # Mastodon Client: Technical Overview and Implementation
